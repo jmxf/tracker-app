@@ -1,6 +1,7 @@
 #tracker-app
 library(shiny)
 ui <- fluidPage(
+#  theme = "filename.css",
   fluidRow(
     tags$h1("This is an APP"),
     tags$a(href = "https://github.com/jmxf", "My GitHub Profile"),
@@ -34,6 +35,4 @@ shinyApp(ui = ui, server = server)
 ###video paused at 1:59:13
 
 ###shinyapps.io
-###put images in www folder
-
-###user commit test change
+###put images and additional css file in www folder
