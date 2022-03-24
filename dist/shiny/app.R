@@ -26,13 +26,18 @@ server <- function(input, output) {
   output$hist <- renderPlot({
     hist(rv$data)
   })
+  
+  shinyApp(ui = ui, server = server)
+  
+  shinyServer(function(input, output, session){
+    session$onSessionEnded(function() {
+      stopApp()
+    })
+  })
+  
 }
 
 shinyApp(ui = ui, server = server)
 
 
-
-###video paused at 1:59:13
-
-###shinyapps.io
 ###put images and additional css file in www folder
