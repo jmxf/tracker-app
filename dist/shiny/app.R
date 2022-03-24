@@ -2,9 +2,15 @@
 library(shiny)
 ui <- fluidPage(
 #  theme = "filename.css",
+  titlePanel(title = "Tracker App", windowTitle = "Tracker App"),
+  
+  sidebarLayout(
+    sidebarPanel(),
+    mainPanel()
+  ),
+  
   fluidRow(
-    tags$h1("This is an APP"),
-    tags$a(href = "https://github.com/jmxf", "My GitHub Profile"),
+    column(2, offset = 8, tags$a(href = "https://github.com/jmxf", "My GitHub Profile")),
     tags$br()
   ),
   fluidRow(
@@ -29,6 +35,7 @@ server <- function(input, output) {
   
   shinyApp(ui = ui, server = server)
   
+###termination function, possibly in wrong place
   shinyServer(function(input, output, session){
     session$onSessionEnded(function() {
       stopApp()
