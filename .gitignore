@@ -3,3 +3,5 @@
 .RData
 .Ruserdata
 .Rhistory
+dist/GoogleChromePortable/
+dist/R-Portable/
