@@ -1,34 +1,23 @@
 #tracker-app
 library(shiny)
 ui <- fluidPage(
-#  theme = "filename.css",
-  titlePanel(title = "Tracker App", windowTitle = "Tracker App"),
-  
-  sidebarLayout(
-    sidebarPanel(
-      tags$p("Data Input"),
-      tags$p("Analysis"),
-      tags$p("Settings"),
-      tags$a(href = "https://github.com/jmxf", "My GitHub Profile")
-    ),
-    mainPanel(
-      
-      fluidRow(
-        column(2, offset = 8, ),
-        tags$br()
-      ),
-      fluidRow(
-        column(2, actionButton(inputId = "norm", label = "Normal")),
-        column(2, actionButton(inputId = "unif", label = "Uniform"))
-      ),
-      fluidRow(
-        column(8, offset = 2, plotOutput("hist"))
-      )
-      
-    )
+  list(tags$head(HTML('<link rel="icon", href="JAM-logos-colour-adj.jpg",
+                      type="image/jpg" />'))),
+  div(style = "padding: 1px 0px; width: '100%'",
+      titlePanel(
+        title = "", windowTitle = "Window Title"
+      )),
+  navbarPage(
+    title = tags$div(img(src = "JAM-logos-colour-adj.jpg", height = 150), title = "Tracker App"),
+    
+    
+    tabPanel(title = "Data Input"),
+    tabPanel(title = "Analysis"),
+    tabPanel(title = "Settings")
   )
-  
 )
+
+
 
 server <- function(input, output) {
   
