@@ -5,21 +5,29 @@ ui <- fluidPage(
   titlePanel(title = "Tracker App", windowTitle = "Tracker App"),
   
   sidebarLayout(
-    sidebarPanel(),
-    mainPanel()
-  ),
-  
-  fluidRow(
-    column(2, offset = 8, tags$a(href = "https://github.com/jmxf", "My GitHub Profile")),
-    tags$br()
-  ),
-  fluidRow(
-    column(2, actionButton(inputId = "norm", label = "Normal")),
-    column(2, actionButton(inputId = "unif", label = "Uniform"))
-  ),
-  fluidRow(
-    column(8, offset = 2, plotOutput("hist"))
+    sidebarPanel(
+      tags$p("Data Input"),
+      tags$p("Analysis"),
+      tags$p("Settings"),
+      tags$a(href = "https://github.com/jmxf", "My GitHub Profile")
+    ),
+    mainPanel(
+      
+      fluidRow(
+        column(2, offset = 8, ),
+        tags$br()
+      ),
+      fluidRow(
+        column(2, actionButton(inputId = "norm", label = "Normal")),
+        column(2, actionButton(inputId = "unif", label = "Uniform"))
+      ),
+      fluidRow(
+        column(8, offset = 2, plotOutput("hist"))
+      )
+      
+    )
   )
+  
 )
 
 server <- function(input, output) {
