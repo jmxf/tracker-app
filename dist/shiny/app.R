@@ -147,7 +147,7 @@ server <- function(input, output) {
                         "Your file exists")
   })
   
-  bindEvent()
+#  bindEvent()
   
   
   
