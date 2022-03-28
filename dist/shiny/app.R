@@ -12,20 +12,74 @@ ui <- navbarPage(
     base_font = "Segoe UI"
   ),
   
-  title = tags$div(img(src = "JAM-logos-colour-adj-crop.jpg", height = 75), title = "Tracker App"),
+  title = tags$div(img(src = "JAM-logos-colour-adj-crop.jpg", height = 75),
+                   title = "Tracker App"),
   position = "static-top",
 
   
   tabPanel(title = "Data Input",
            fluidRow(
              column(
-               width = 3,
-               tags$p("Input your data by selecting a Category on the drowpdown and 
-                  filling in the text field."),
-               actionButton(inputId = "trackButton", label = "Track Instance")
+               width = 12,
+               helpText(
+                 tags$p("Input your data by selecting a Category on the drowpdown and 
+                  filling in the text field.")
+               )
+             )
+           ),
+           fluidRow(
+             column(
+               width = 4,
+               selectInput(
+                 inputId = "trackedCategory",
+                 label = "Category",
+                 choices = list("Reading Time", "Exercise Time", "Work"),
+                 multiple = FALSE
+               )
              ),
-             mainPanel()
+             column(
+               width = 4,
+               dateInput(
+                 inputId = "trackedDate",
+                 label = "Date",
+                 format = "dd.mm.yyyy",
+                 weekstart = 1
+               )
+             )
+           ),
+           fluidRow(
+             column(
+               width = 4,
+               #create something more suitable to eventually be able to submit
+               #times in HH:MM format
+               numericInput(
+                 inputId = "trackedTime",
+                 label = "Amount of Time in Minutes",
+                 value = 0
+               )
+             )
+           ),
+           fluidRow(
+             column(
+               width = 12,
+               textInput(
+                 inputId = "trackedComment",
+                 label = "Notes",
+                 width = "100%",
+                 placeholder = "Enter details about the time tracked..."
+               )
+             )
+           ),
+           fluidRow(
+             column(
+               width = 4,
+               actionButton(
+                 inputId = "track",
+                 label = "Track"
+               )
+             )
            )
+           
   ),
   
   tabPanel(title = "Analysis", value = "analysis"),
@@ -34,18 +88,42 @@ ui <- navbarPage(
     value = "settings",
     sidebarLayout(
       sidebarPanel(
+        style = "height: 100%",
         tags$p("Specify your settings for the App")
       ),
       mainPanel(
-        textInput(
-          inputId = "location",
-          label = "Select a location to save your data"
+        fluidRow(
+          column(width = 4,
+            textInput(
+              inputId = "fileLocation",
+              label = "Select a location to save your data"
+            )
+          ),
+          column(width = 4,
+            textInput(
+              inputId = "fileName",
+              label = "Enter a name for your file"
+            )
+          ),
+          column(width = 4,
+            wellPanel(
+              textOutput(outputId = "userFileStatus")
+            )
+          )
         ),
-        textInput(
-          inputId = "fileName",
-          label = "Enter a name for your file"
-        ),
-        textOutput(outputId = "userFileStatus")
+        fluidRow(
+          column(
+            width = 4,
+            actionButton(
+              inputId = "updateSettings",
+              label = "Update Settings"
+            )
+          )
+        )
+        
+
+
+
       )
     )
     )
@@ -55,6 +133,11 @@ ui <- navbarPage(
 
 server <- function(input, output) {
   
+###Data Input tab
+  
+###Analysis tab
+  
+###Settings tab  
   userDetails <- if(file.exists("user.csv"))
     read_csv("user.csv")
   
@@ -64,15 +147,7 @@ server <- function(input, output) {
                         "Your file exists")
   })
   
-  
-  rv <- reactiveValues(data = rnorm(100))
-  
-  observeEvent(input$norm, { rv$data <- rnorm(100) })
-  observeEvent(input$unif, { rv$data <- runif(100) })
-  
-  output$hist <- renderPlot({
-    hist(rv$data)
-  })
+  bindEvent()
   
   
   
