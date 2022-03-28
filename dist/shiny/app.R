@@ -1,34 +1,157 @@
 #tracker-app
 library(shiny)
-ui <- fluidPage(
-#  theme = "filename.css",
-  fluidRow(
-    tags$h1("This is an APP"),
-    tags$a(href = "https://github.com/jmxf", "My GitHub Profile"),
-    tags$br()
+library(bslib)
+library(tidyverse)
+
+ui <- navbarPage(
+  theme = bs_theme(
+    bg = "#FFFFFF", #white
+    fg = "#141115", #Xiketic
+    primary = "#4D6A6D", #Deep Space Sparkle
+    secondary = "#4C2B36", #Old Mauve
+    base_font = "Segoe UI"
   ),
-  fluidRow(
-    column(2, actionButton(inputId = "norm", label = "Normal")),
-    column(2, actionButton(inputId = "unif", label = "Uniform"))
+  
+  title = tags$div(img(src = "JAM-logos-colour-adj-crop.jpg", height = 75),
+                   title = "Tracker App"),
+  position = "static-top",
+
+  
+  tabPanel(title = "Data Input",
+           fluidRow(
+             column(
+               width = 12,
+               helpText(
+                 tags$p("Input your data by selecting a Category on the drowpdown and 
+                  filling in the text field.")
+               )
+             )
+           ),
+           fluidRow(
+             column(
+               width = 4,
+               selectInput(
+                 inputId = "trackedCategory",
+                 label = "Category",
+                 choices = list("Reading Time", "Exercise Time", "Work"),
+                 multiple = FALSE
+               )
+             ),
+             column(
+               width = 4,
+               dateInput(
+                 inputId = "trackedDate",
+                 label = "Date",
+                 format = "dd.mm.yyyy",
+                 weekstart = 1
+               )
+             )
+           ),
+           fluidRow(
+             column(
+               width = 4,
+               #create something more suitable to eventually be able to submit
+               #times in HH:MM format
+               numericInput(
+                 inputId = "trackedTime",
+                 label = "Amount of Time in Minutes",
+                 value = 0
+               )
+             )
+           ),
+           fluidRow(
+             column(
+               width = 12,
+               textInput(
+                 inputId = "trackedComment",
+                 label = "Notes",
+                 width = "100%",
+                 placeholder = "Enter details about the time tracked..."
+               )
+             )
+           ),
+           fluidRow(
+             column(
+               width = 4,
+               actionButton(
+                 inputId = "track",
+                 label = "Track"
+               )
+             )
+           )
+           
   ),
-  fluidRow(
-    column(8, offset = 2, plotOutput("hist"))
-  )
+  
+  tabPanel(title = "Analysis", value = "analysis"),
+  tabPanel(
+    title = "Settings",
+    value = "settings",
+    sidebarLayout(
+      sidebarPanel(
+        style = "height: 100%",
+        tags$p("Specify your settings for the App")
+      ),
+      mainPanel(
+        fluidRow(
+          column(width = 4,
+            textInput(
+              inputId = "fileLocation",
+              label = "Select a location to save your data"
+            )
+          ),
+          column(width = 4,
+            textInput(
+              inputId = "fileName",
+              label = "Enter a name for your file"
+            )
+          ),
+          column(width = 4,
+            wellPanel(
+              textOutput(outputId = "userFileStatus")
+            )
+          )
+        ),
+        fluidRow(
+          column(
+            width = 4,
+            actionButton(
+              inputId = "updateSettings",
+              label = "Update Settings"
+            )
+          )
+        )
+        
+
+
+
+      )
+    )
+    )
 )
+
+
 
 server <- function(input, output) {
   
-  rv <- reactiveValues(data = rnorm(100))
+###Data Input tab
   
-  observeEvent(input$norm, { rv$data <- rnorm(100) })
-  observeEvent(input$unif, { rv$data <- runif(100) })
+###Analysis tab
   
-  output$hist <- renderPlot({
-    hist(rv$data)
+###Settings tab  
+  userDetails <- if(file.exists("user.csv"))
+    read_csv("user.csv")
+  
+  output$userFileStatus <- renderText({
+    fileCheck <- ifelse(is.null(userDetails),
+                        "You have not specified a file",
+                        "Your file exists")
   })
   
-  shinyApp(ui = ui, server = server)
+  bindEvent()
   
+  
+  
+###termination function, possibly in wrong place
   shinyServer(function(input, output, session){
     session$onSessionEnded(function() {
       stopApp()
@@ -38,6 +161,3 @@ server <- function(input, output) {
 }
 
 shinyApp(ui = ui, server = server)
-
-
-###put images and additional css file in www folder
