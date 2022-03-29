@@ -2,7 +2,6 @@
 library(shiny)
 library(bslib)
 library(tidyverse)
-library(rjson)
 
 ui <- navbarPage(
   theme = bs_theme(
@@ -63,7 +62,7 @@ ui <- navbarPage(
            fluidRow(
              column(
                width = 12,
-               textInput(
+               textAreaInput(
                  inputId = "trackedComment",
                  label = "Notes",
                  width = "100%",
@@ -127,7 +126,8 @@ ui <- navbarPage(
           column(
             width = 8,
             wellPanel(
-              tags$h6("Existing Categories")
+              tags$h6("Existing Categories"),
+              textOutput("settingsTable")
             )
           )
         ),
@@ -158,8 +158,8 @@ server <- function(input, output) {
 ###Analysis tab
   
 ###Settings tab  
-  userDetails <- if(file.exists("user.json"))
-    read_csv("user.json")
+  userDetails <- if(file.exists("user.csv"))
+    read_csv("user.csv")
   
   output$userFileStatus <- renderText({
     fileCheck <- ifelse(is.null(userDetails),
@@ -167,7 +167,20 @@ server <- function(input, output) {
                         "Your file exists")
   })
   
-# userSpecifications[[location]] <- 
+  
+  observeEvent(input$updateSettings, {
+    userSpecifications <- data.frame(
+      "location" = input$fileLocation,
+      "fileName" = input$fileName,
+      "categories" = input$addCategory
+    )
+    output$settingsTable <- renderText(userSpecifications$categories)
+    print(as.numeric(input$updateSettings))
+    print(userSpecifications)
+    write_csv(x = userSpecifications, file = "user.csv")
+  })
+  
+ 
   
 #  bindEvent()
   
