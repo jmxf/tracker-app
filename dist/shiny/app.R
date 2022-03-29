@@ -2,6 +2,7 @@
 library(shiny)
 library(bslib)
 library(tidyverse)
+library(rjson)
 
 ui <- navbarPage(
   theme = bs_theme(
@@ -16,7 +17,7 @@ ui <- navbarPage(
                    title = "Tracker App"),
   position = "static-top",
 
-  
+###Data Input tab  
   tabPanel(title = "Data Input",
            fluidRow(
              column(
@@ -81,8 +82,11 @@ ui <- navbarPage(
            )
            
   ),
-  
+
+###Analysis tab  
   tabPanel(title = "Analysis", value = "analysis"),
+
+###Settings tab
   tabPanel(
     title = "Settings",
     value = "settings",
@@ -107,7 +111,23 @@ ui <- navbarPage(
           ),
           column(width = 4,
             wellPanel(
-              textOutput(outputId = "userFileStatus")
+              textOutput(outputId = "userFileStatus"),
+              style = "background: #4D6A6D; color: #FFFFFF; font-weight: bold"
+            )
+          )
+        ),
+        fluidRow(
+          column(
+            width = 4,
+            textInput(
+              inputId = "addCategory",
+              label = "Add new Category"
+            )
+          ),
+          column(
+            width = 8,
+            wellPanel(
+              tags$h6("Existing Categories")
             )
           )
         ),
@@ -138,14 +158,16 @@ server <- function(input, output) {
 ###Analysis tab
   
 ###Settings tab  
-  userDetails <- if(file.exists("user.csv"))
-    read_csv("user.csv")
+  userDetails <- if(file.exists("user.json"))
+    read_csv("user.json")
   
   output$userFileStatus <- renderText({
     fileCheck <- ifelse(is.null(userDetails),
                         "You have not specified a file",
                         "Your file exists")
   })
+  
+# userSpecifications[[location]] <- 
   
 #  bindEvent()
   
