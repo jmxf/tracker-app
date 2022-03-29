@@ -16,7 +16,7 @@ ui <- navbarPage(
                    title = "Tracker App"),
   position = "static-top",
 
-  
+###Data Input tab  
   tabPanel(title = "Data Input",
            fluidRow(
              column(
@@ -62,7 +62,7 @@ ui <- navbarPage(
            fluidRow(
              column(
                width = 12,
-               textInput(
+               textAreaInput(
                  inputId = "trackedComment",
                  label = "Notes",
                  width = "100%",
@@ -81,8 +81,11 @@ ui <- navbarPage(
            )
            
   ),
-  
+
+###Analysis tab  
   tabPanel(title = "Analysis", value = "analysis"),
+
+###Settings tab
   tabPanel(
     title = "Settings",
     value = "settings",
@@ -107,7 +110,24 @@ ui <- navbarPage(
           ),
           column(width = 4,
             wellPanel(
-              textOutput(outputId = "userFileStatus")
+              textOutput(outputId = "userFileStatus"),
+              style = "background: #4D6A6D; color: #FFFFFF; font-weight: bold"
+            )
+          )
+        ),
+        fluidRow(
+          column(
+            width = 4,
+            textInput(
+              inputId = "addCategory",
+              label = "Add new Category"
+            )
+          ),
+          column(
+            width = 8,
+            wellPanel(
+              tags$h6("Existing Categories"),
+              textOutput("settingsTable")
             )
           )
         ),
@@ -146,6 +166,21 @@ server <- function(input, output) {
                         "You have not specified a file",
                         "Your file exists")
   })
+  
+  
+  observeEvent(input$updateSettings, {
+    userSpecifications <- data.frame(
+      "location" = input$fileLocation,
+      "fileName" = input$fileName,
+      "categories" = input$addCategory
+    )
+    output$settingsTable <- renderText(userSpecifications$categories)
+    print(as.numeric(input$updateSettings))
+    print(userSpecifications)
+    write_csv(x = userSpecifications, file = "user.csv")
+  })
+  
+ 
   
 #  bindEvent()
   
