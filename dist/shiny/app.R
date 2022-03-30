@@ -12,6 +12,7 @@ ui <- navbarPage(
     base_font = "Segoe UI"
   ),
   
+  windowTitle = "Window Title",
   title = tags$div(img(src = "JAM-logos-colour-adj-crop.jpg", height = 75),
                    title = "Tracker App"),
   position = "static-top",
@@ -33,7 +34,7 @@ ui <- navbarPage(
                selectInput(
                  inputId = "trackedCategory",
                  label = "Category",
-                 choices = list("Reading Time", "Exercise Time", "Work"),
+                 choices = categories,
                  multiple = FALSE
                )
              ),
@@ -153,18 +154,24 @@ ui <- navbarPage(
 
 server <- function(input, output) {
   
+  userDetails <- if(file.exists("user.csv"))
+    read_csv("user.csv")
+  
 ###Data Input tab
+  
+  categories <- str_split(
+    string = userDetails$categories,
+    pattern = ";"
+  )
   
 ###Analysis tab
   
 ###Settings tab  
-  userDetails <- if(file.exists("user.csv"))
-    read_csv("user.csv")
   
   output$userFileStatus <- renderText({
-    fileCheck <- ifelse(is.null(userDetails),
-                        "You have not specified a file",
-                        "Your file exists")
+    ifelse(is.null(userDetails),
+           "You have not specified a file",
+           "Your file exists")
   })
   
   
@@ -181,8 +188,6 @@ server <- function(input, output) {
   })
   
  
-  
-#  bindEvent()
   
   
   
